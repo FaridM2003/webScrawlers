@@ -20,21 +20,33 @@
     <script>
         // Función para actualizar los resultados
         function actualizarResultados() {
-            fetch('/api/titles')
-                .then(response => response.json())
-                .then(titles => {
-                    const resultados = document.getElementById('resultados');
-                    resultados.innerHTML = ''; // Limpiar resultados anteriores
+            async function cargarResultados() {
+            try {
+                const response = await fetch('/api/titles'); // Hacer la solicitud a la API
+                const resultados = await response.json(); // Convertir la respuesta a JSON
+                
+                const resultadosContainer = document.getElementById('resultados');
+                resultadosContainer.innerHTML = ''; // Limpiar resultados previos
 
-                    // Añadir cada título a la lista
-                    titles.forEach(title => {
-                        const listItem = document.createElement('li');
-                        listItem.classList.add('list-group-item', 'p-2', 'mx-auto', 'my-1', 'icon-link', 'rounded', 'flex-column');
-                        listItem.textContent = title;
-                        resultados.appendChild(listItem);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
+                resultados.forEach(resultado => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('list-group-item');
+
+                    if (resultado.tipo === "partido_programado") {
+                        listItem.textContent = `${resultado.equipo1} juega contra ${resultado.equipo2} a las ${resultado.hora}`;
+                    } else if (resultado.tipo === "resultado_final") {
+                        listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
+                    } else {
+                        listItem.textContent = "Datos no disponibles";
+                    }
+
+                    resultadosContainer.appendChild(listItem); // Agregar el item al contenedor
+                });
+            } catch (error) {
+                console.error('Error al cargar resultados:', error);
+            }
+        }
+            window.onload = cargarResultados;
             fetch('/api/news')
                 .then(response => response.json())
                 .then(news => {
