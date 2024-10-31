@@ -35,8 +35,7 @@
                     });
                 })
                 .catch(error => console.error('Error:', error));
-        }
-        fetch('/api/news')
+            fetch('/api/news')
                 .then(response => response.json())
                 .then(news => {
                     const resultados = document.getElementById('news');
@@ -51,6 +50,10 @@
                     });
                 })
                 .catch(error => console.error('Error:', error));
+
+
+        }
+      
         // Llamar a actualizarResultados cada 30 segundos
         setInterval(actualizarResultados, 30000);
 
