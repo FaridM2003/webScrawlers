@@ -9,8 +9,8 @@
 </head>
 <body class="bg-dark-subtle">
     <h1 class="bg-success text-body-emphasis text-center p-5 rounded mx-5">Resultados de partidos</h1>
-    <div class="container">
-        <ul id="resultados" class="list-group">
+    <div>
+        <ul id="resultados"  class="list-group d-flex text-center mx-5">
             <!-- Aquí se insertarán los resultados desde JavaScript -->
         </ul>
     </div>
@@ -34,7 +34,7 @@
                     listItem.classList.add('list-group-item');
 
                     if (resultado.tipo === "partido_programado") {
-                        listItem.textContent = `${resultado.equipo1} juega contra ${resultado.equipo2} a las ${resultado.hora}`;
+                        listItem.textContent = `${resultado.equipo1} juega contra ${resultado.equipo2}, en ${resultado.hora}`;
                     } else if (resultado.tipo === "resultado_final") {
                         listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
                     } else {
