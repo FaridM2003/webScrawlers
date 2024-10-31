@@ -9,9 +9,11 @@
 </head>
 <body class="bg-dark-subtle">
     <h1 class="bg-success text-body-emphasis text-center p-5 rounded mx-5">Resultados de partidos</h1>
-    <ul id="resultados" class="list-group d-flex">
-        <!-- Los resultados se actualizarán aquí -->
-    </ul>
+    <div class="container">
+        <ul id="resultados" class="list-group">
+            <!-- Aquí se insertarán los resultados desde JavaScript -->
+        </ul>
+    </div>
     <div>
         <h2 class="bg-danger text-body-emphasis text-center p-5 rounded mx-5">Noticias</h2>
         <ul id="news" class="list-group d-flex"></ul>
@@ -19,8 +21,7 @@
     
     <script>
         // Función para actualizar los resultados
-        function actualizarResultados() {
-            async function cargarResultados() {
+        async function cargarResultados() {
             try {
                 const response = await fetch('/api/titles'); // Hacer la solicitud a la API
                 const resultados = await response.json(); // Convertir la respuesta a JSON
@@ -46,7 +47,12 @@
                 console.error('Error al cargar resultados:', error);
             }
         }
-            window.onload = cargarResultados;
+
+        // Llamar a la función para cargar los resultados al cargar la página
+        window.onload = cargarResultados;
+
+        function actualizarResultados() {
+          
             fetch('/api/news')
                 .then(response => response.json())
                 .then(news => {
