@@ -38,9 +38,10 @@ def parse_match_time(text):
     return {"error": "Formato no reconocido"}
 
 def parse_match_score(text):
+    if isinstance(text, bytes):
+        text = text.decode("utf-8")
     # Expresión regular para partidos con resultados finales
-    pattern_score = r"([\w\s\p{L}]+)\s+(\d+)-(\d+)\s+([\w\s\p{L}]+)"
-    
+    pattern_score = r"([\w\s\p{L}]+?)(\d+)\s*-\s*(\d+)([\w\s\p{L}]+)"
     # Intentar hacer coincidir el texto con el patrón de resultado final
     match_score = re.search(pattern_score, text)
     if match_score:
@@ -64,7 +65,6 @@ def api_titles():
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         match_elements = soup.find_all('div', class_='tpl-match-block-teams')
-        
         for element in match_elements:
             match_text = element.get_text(strip=True)
             
