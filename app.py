@@ -20,14 +20,29 @@ def api_news():
     return jsonify(news)
 
 
-
+def parse_match_time(text):
+    # Expresión regular para capturar equipo1, hora y equipo2 sin necesidad de espacio
+    pattern_time = r"([\w\s\p{L}]+?)(\d{1,2}h\d{2})([\w\s\p{L}]+)"
+    
+    # Intentar hacer coincidir el texto con el patrón de partido programado
+    match_time = re.search(pattern_time, text)
+    if match_time:
+        equipo1, hora, equipo2 = match_time.groups()
+        return {
+            "tipo": "partido_programado",
+            "equipo1": equipo1.strip(),
+            "hora": hora,
+            "equipo2": equipo2.strip()
+        }
+    
+    return {"error": "Formato no reconocido"}
 
 def parse_match_score(text):
-    # Expresión regular mejorada para capturar nombres de equipos con caracteres especiales y espacios
-    pattern_score = r"([\w\s\p{L}]+)\s*(\d+)-(\d+)\s*([\w\s\p{L}]+)"
+    # Expresión regular para partidos con resultados finales
+    pattern_score = r"([\w\s\p{L}]+)\s+(\d+)-(\d+)\s+([\w\s\p{L}]+)"
     
-    # Intentar hacer coincidir el texto con el patrón de marcador
-    match_score = re.search(pattern_score, text, re.UNICODE)
+    # Intentar hacer coincidir el texto con el patrón de resultado final
+    match_score = re.search(pattern_score, text)
     if match_score:
         equipo1, goles1, goles2, equipo2 = match_score.groups()
         return {
@@ -35,23 +50,6 @@ def parse_match_score(text):
             "equipo1": equipo1.strip(),
             "goles1": int(goles1),
             "goles2": int(goles2),
-            "equipo2": equipo2.strip()
-        }
-    
-    return {"error": "Formato no reconocido"}
-
-def parse_match_time(text):
-    # Nueva expresión regular para partidos programados (e.g., "Crvena Zvezda 18h30 Beşiktaş")
-    pattern_time = r"([\w\s\p{L}]+)\s*(\d{1,2}h\d{2})\s*([\w\s\p{L}]+)"
-    
-    # Intentar hacer coincidir el texto con el patrón de partido programado
-    match_time = re.search(pattern_time, text, re.UNICODE)
-    if match_time:
-        equipo1, hora, equipo2 = match_time.groups()
-        return {
-            "tipo": "partido_programado",
-            "equipo1": equipo1.strip(),
-            "hora": hora,
             "equipo2": equipo2.strip()
         }
     
