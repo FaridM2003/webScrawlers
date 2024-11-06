@@ -1,90 +1,89 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>Web Crawler</title>
-</head>
-
-<body class="bg-dark-subtle">
-    <div>
-        <h1 class="bg-success text-body-emphasis text-center p-5 rounded mx-5">Partidos de hoy</h1>
-        <ul id="resultados" class="list-group d-flex text-center mx-5">
-            <!-- Aquí se insertarán los resultados desde JavaScript -->
+  </head>
+  <body class="bg-slate-300 dark:bg-slate-600">
+    <div class="bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl w-3/5 place-self-center">
+      <div>
+        <span class="inline-flex items-center justify-center p-2 bg-indigo-500 rounded-md shadow-lg w-full place-self-center">
+            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><!-- ... --></svg>
+          </span>
+        <h1 class="text-slate-900 dark:text-white mt-5 font-medium tracking-tight text-2xl">
+          Partidos de hoy
+        </h1>
+        
+        <ul id="resultados" class="text-slate-500 dark:text-slate-600 mt-2 text-sm flex">
+          <!-- Aquí se insertarán los resultados desde JavaScript -->
         </ul>
-    </div>
-    <div>
-        <h2 class="bg-danger text-body-emphasis text-center p-5 rounded mx-5">Noticias</h2>
-        <ul id="news" class="list-group d-flex text-center mx-5"></ul>
+      </div>
+      <div>
+        <h2 class="text-slate-900 dark:text-white mt-5 font-medium tracking-tight text-2xl">
+          Noticias
+        </h2>
+        <ul id="news" class="text-slate-500 dark:text-slate-400 mt-2 text-sm flex"></ul>
+      </div>
     </div>
 
     <script>
-        // Función para actualizar los resultados
-        async function cargarResultados() {
-            try {
-                const response = await fetch('/api/titles'); // Hacer la solicitud a la API
-                const resultados = await response.json(); // Convertir la respuesta a JSON
+      // Función para actualizar los resultados
+      async function cargarResultados() {
+        try {
+          const response = await fetch("/api/titles"); // Hacer la solicitud a la API
+          const resultados = await response.json(); // Convertir la respuesta a JSON
 
-                const resultadosContainer = document.getElementById('resultados');
-                resultadosContainer.innerHTML = ''; // Limpiar resultados previos
+          const resultadosContainer = document.getElementById("resultados");
+          resultadosContainer.innerHTML = ""; // Limpiar resultados previos
 
-                resultados.forEach(resultado => {
-                    const listItem = document.createElement('li');
-                    listItem.classList.add('list-group-item');
+          resultados.forEach((resultado) => {
+            const listItem = document.createElement("li");
+            listItem.classList.add("w-50","bg-slate-200","box-border","p-4","border-2","border-slate-500","rounded-md","m-4","text-slate-800","dark:bg-slate-800","dark:text-slate-200","text-xl");
 
-                    if (resultado.tipo === "partido_programado") {
-                        listItem.textContent = `${resultado.equipo1} juega contra ${resultado.equipo2}, en ${resultado.hora}`;
-                    } else if (resultado.tipo === "resultado_final") {
-                        listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
-                    } else {
-                        listItem.textContent = "Datos no disponibles";
-                    }
-
-                    resultadosContainer.appendChild(listItem); // Agregar el item al contenedor
-                });
-            } catch (error) {
-                console.error('Error al cargar resultados:', error);
+            if (resultado.tipo === "partido_programado") {
+              listItem.textContent = `${resultado.equipo1} juega contra ${resultado.equipo2}, en ${resultado.hora}`;
+            } else if (resultado.tipo === "resultado_final") {
+              listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
+            } else {
+              listItem.textContent = "Datos no disponibles";
             }
+
+            resultadosContainer.appendChild(listItem); // Agregar el item al contenedor
+          });
+        } catch (error) {
+          console.error("Error al cargar resultados:", error);
         }
+      }
 
-        // Llamar a la función para cargar los resultados al cargar la página
-        window.onload = cargarResultados;
+      // Llamar a la función para cargar los resultados al cargar la página
+      window.onload = cargarResultados;
 
-        function actualizarResultados() {
+      function actualizarResultados() {
+        fetch("/api/news")
+          .then((response) => response.json())
+          .then((news) => {
+            const resultados = document.getElementById("news");
+            resultados.innerHTML = ""; // Limpiar resultados anteriores
 
-            fetch('/api/news')
-                .then(response => response.json())
-                .then(news => {
-                    const resultados = document.getElementById('news');
-                    resultados.innerHTML = ''; // Limpiar resultados anteriores
+            // Añadir cada título a la lista
+            news.forEach((newp) => {
+              const listItem = document.createElement("li");
+              listItem.classList.add("w-50","bg-slate-200","box-border","p-4","border-2","border-slate-500","rounded-md","m-4","text-slate-800","dark:bg-slate-800","dark:text-slate-200","text-xl");
+              listItem.textContent = newp;
+              resultados.appendChild(listItem);
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      }
 
-                    // Añadir cada título a la lista
-                    news.forEach(newp => {
-                        const listItem = document.createElement('li');
-                        listItem.classList.add('list-group-item');
-                        listItem.textContent = newp;
-                        resultados.appendChild(listItem);
-                    });
-                })
-                .catch(error => console.error('Error:', error));
+      // Llamar a actualizarResultados cada 30 segundos
+      setInterval(actualizarResultados, 30000);
 
-
-        }
-
-        // Llamar a actualizarResultados cada 30 segundos
-        setInterval(actualizarResultados, 30000);
-
-        // Llamar a actualizarResultados una vez al cargar la página
-        actualizarResultados();
+      // Llamar a actualizarResultados una vez al cargar la página
+      actualizarResultados();
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-</body>
-
+  </body>
+  <script src="https://cdn.tailwindcss.com"></script>
 </html>
