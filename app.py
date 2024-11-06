@@ -15,10 +15,17 @@ def api_news():
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         news = [a_tag.get_text() for h2_tag in soup.find_all('h2','title') for a_tag in h2_tag.find_all('a','page-link')]
-
-    
     return jsonify(news)
 
+@app.route('/api/news/href')
+def api_newshref():
+    url = "https://www.lavanguardia.com/deportes/resultados"
+    response = requests.get(url)
+    newshref = []
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        newshref = ["https://www.lavanguardia.com"+ a_tag.get('href') for h2_tag in soup.find_all('h2', 'title') for a_tag in h2_tag.find_all('a', 'page-link')]
+    return jsonify(newshref)
 
 def parse_match_time(text):
     # Expresión regular para capturar equipo1, hora y equipo2 sin necesidad de espacio

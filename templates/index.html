@@ -67,22 +67,36 @@
         window.onload = cargarResultados;
 
         function actualizarResultados() {
-            fetch("/api/news")
-                .then((response) => response.json())
-                .then((news) => {
+            // Realizar ambas solicitudes en paralelo
+            Promise.all([
+                fetch("/api/news").then((response) => response.json()), // Para obtener los títulos de las noticias
+                fetch("/api/news/href").then((response) => response.json()) // Para obtener los hrefs
+            ])
+                .then(([news, hrefs]) => {
                     const resultados = document.getElementById("news");
                     resultados.innerHTML = ""; // Limpiar resultados anteriores
 
-                    // Añadir cada título a la lista
-                    news.forEach((newp) => {
+                    // Añadir cada noticia con su correspondiente enlace
+                    news.forEach((newp, index) => {
                         const listItem = document.createElement("li");
-                        listItem.classList.add("w-auto", "md:w-auto", "bg-slate-200", "box-border", "p-4", "border-2", "border-slate-500", "rounded-md", "m-4", "text-slate-800", "dark:bg-slate-800", "dark:text-slate-200", "text-xl");
-                        listItem.textContent = newp;
+                        listItem.classList.add(
+                            "w-auto", "md:w-auto", "bg-slate-200", "box-border", "p-4",
+                            "border-2", "border-slate-500", "rounded-md", "m-4", "text-slate-800",
+                            "dark:bg-slate-800", "dark:text-slate-200", "text-xl", "hover:border-slate-100", "hover:animate-pulse"
+                        );
+
+                        const listItemHref = document.createElement("a");
+                        listItemHref.href = hrefs[index]; // Asignar el href de la respuesta
+                        listItemHref.textContent = newp; // Asignar el texto de la noticia
+                        listItemHref.target = "_blank"
+                        // Añadir el enlace dentro del item de la lista
+                        listItem.appendChild(listItemHref);
                         resultados.appendChild(listItem);
                     });
                 })
                 .catch((error) => console.error("Error:", error));
         }
+
 
         // Llamar a actualizarResultados cada 30 segundos
         setInterval(actualizarResultados, 30000);
