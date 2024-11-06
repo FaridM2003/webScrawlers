@@ -10,7 +10,7 @@ Este proyecto es un web scraper diseñado para recopilar información de resulta
 - **Compatibilidad Unicode**: Admite nombres de equipos que incluyen caracteres especiales y nombres compuestos, como "Beşiktaş" o "AD Ceuta FC".
 
 ## Requisitos
-- **Python 3.7+**
+- **Python 3.12.4 ++**
 - Librerías necesarias (instalación mediante `pip`):
   ```bash
   pip install requests beautifulsoup4 flask regex
