@@ -50,14 +50,16 @@
                         listItem.textContent = `${resultado.equipo1} VS 
                                         ${resultado.equipo2} 
                                         en ${resultado.hora}`;
-                                    } else if (resultado.tipo === "partido_daniado"){
-                                        listItem.textContent = resultado.text
-                                    } else if (resultado.tipo === "resultado_final") {
-                                        listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
-                                    }else if (resultado.tipo === "resultado_daniado"){
-                                        listItem.textContent = resultado.text
-                                    }else{
-                        
+                    } else if (resultado.tipo === "partido_daniado") {
+                        listItem.textContent = resultado.text
+                        listItem.classList.add("dark:border-red-800","border-red-400")
+                    } else if (resultado.tipo === "resultado_final") {
+                        listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
+                    } else if (resultado.tipo === "resultado_daniado") {
+                        listItem.textContent = resultado.text
+                        listItem.classList.add("dark:border-red-800","border-red-400")
+                    } else {
+
                         listItem.textContent = "Datos no disponibles";
                     }
 
@@ -92,7 +94,7 @@
 
                         const listItemHref = document.createElement("a");
                         listItemHref.href = hrefs[index]; // Asignar el href de la respuesta
-                        
+
                         listItemHref.textContent = newp; // Asignar el texto de la noticia
                         listItemHref.target = "_blank"
                         // Añadir el enlace dentro del item de la lista
