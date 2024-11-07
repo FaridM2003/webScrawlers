@@ -50,9 +50,14 @@
                         listItem.textContent = `${resultado.equipo1} VS 
                                         ${resultado.equipo2} 
                                         en ${resultado.hora}`;
-                    } else if (resultado.tipo === "resultado_final") {
-                        listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
-                    } else {
+                                    } else if (resultado.tipo === "partido_daniado"){
+                                        listItem.textContent = resultado.text
+                                    } else if (resultado.tipo === "resultado_final") {
+                                        listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
+                                    }else if (resultado.tipo === "resultado_daniado"){
+                                        listItem.textContent = resultado.text
+                                    }else{
+                        
                         listItem.textContent = "Datos no disponibles";
                     }
 

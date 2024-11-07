@@ -6,7 +6,6 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template("index.html")
-
 @app.route('/api/news')
 def api_news():
     url = "https://www.lavanguardia.com/deportes/resultados"
@@ -27,9 +26,10 @@ def api_newshref():
         newshref = ["https://www.lavanguardia.com"+ a_tag.get('href') for h2_tag in soup.find_all('h2', 'title') for a_tag in h2_tag.find_all('a', 'page-link')]
     return jsonify(newshref)
 
+pattern_team = r"[A-Za-zÀ-ÖØ-öø-ÿ'\-\s]+"
 def parse_match_time(text):
-    # Expresión regular para capturar equipo1, hora y equipo2 sin necesidad de espacio
-    pattern_time = r"([\w\s\p{L}]+?)(\d{1,2}h\d{2})([\w\s\p{L}]+)"
+    # Expresión regular para capturar equipo1, hora y equipo2
+    pattern_time = re.compile(rf'({pattern_team})\s*(\d{{1,2}}h\d{{2}})\s*({pattern_team})', re.UNICODE)
     
     # Intentar hacer coincidir el texto con el patrón de partido programado
     match_time = re.search(pattern_time, text)
@@ -42,13 +42,16 @@ def parse_match_time(text):
             "equipo2": equipo2.strip()
         }
     
-    return {"error": "Formato no reconocido"}
+    return {
+            "tipo":"partido_daniado",
+            "text":text
+            }
 
 def parse_match_score(text):
     if isinstance(text, bytes):
         text = text.decode("utf-8")
     # Expresión regular para partidos con resultados finales
-    pattern_score = r"([\w\s\p{L}]+?)(\d+)\s*-\s*(\d+)([\w\s\p{L}]+)"
+    pattern_score = re.compile(rf'({pattern_team})\s*(\d+)\s*-\s*(\d+)\s*({pattern_team})')
     # Intentar hacer coincidir el texto con el patrón de resultado final
     match_score = re.search(pattern_score, text)
     if match_score:
@@ -61,7 +64,10 @@ def parse_match_score(text):
             "equipo2": equipo2.strip()
         }
     
-    return {"error": "Formato no reconocido"}
+    return {
+            "tipo":"resultado_daniado",
+            "text":text
+            }
 
 @app.route('/api/titles')
 def api_titles():
