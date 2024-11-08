@@ -1,7 +1,11 @@
-from flask import Flask, jsonify, render_template
+import datetime
+from flask import Flask, jsonify, render_template, make_response
 import requests
 from bs4 import BeautifulSoup
 import regex as re
+import json
+
+
 app = Flask(__name__)
 @app.route('/')
 def index():
@@ -14,7 +18,11 @@ def api_news():
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         news = [a_tag.get_text() for h2_tag in soup.find_all('h2','title') for a_tag in h2_tag.find_all('a','page-link')]
-    return jsonify(news)
+        with open("numeros.txt", "a") as archivo:
+            archivo.write(str((news)) + ", "+str(datetime.date.today()) +"\n")
+        response = make_response(jsonify(news))
+        response.headers['Cache-Control'] = 'no-store'  # Para evitar almacenamiento en caché
+    return response
 
 @app.route('/api/news/href')
 def api_newshref():
@@ -24,7 +32,12 @@ def api_newshref():
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         newshref = ["https://www.lavanguardia.com"+ a_tag.get('href') for h2_tag in soup.find_all('h2', 'title') for a_tag in h2_tag.find_all('a', 'page-link')]
-    return jsonify(newshref)
+        
+        with open("numeros.txt", "a") as archivo:
+            archivo.write(str((newshref)) + ", "+str(datetime.date.today()) +"\n")
+        response = make_response(jsonify(newshref))
+        response.headers['Cache-Control'] = 'no-store'  # Para evitar almacenamiento en caché
+    return response
 
 pattern_team = r"[A-Za-zÀ-ÖØ-öø-ÿ'\-\s]+"
 def parse_match_time(text):
@@ -41,7 +54,6 @@ def parse_match_time(text):
             "hora": hora,
             "equipo2": equipo2.strip()
         }
-    
     return {
             "tipo":"partido_daniado",
             "text":text
@@ -88,7 +100,8 @@ def api_titles():
                 match_info = parse_match_time(match_text)   # Usar para partido programado
             
             results.append(match_info)
-
+        with open("numeros.txt", "a") as archivo:
+            archivo.write(str((results)) + ", "+str(datetime.date.today()) +"\n")
     return jsonify(results)
 
 if __name__ == '__main__':

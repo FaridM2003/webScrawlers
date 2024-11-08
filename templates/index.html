@@ -52,12 +52,12 @@
                                         en ${resultado.hora}`;
                     } else if (resultado.tipo === "partido_daniado") {
                         listItem.textContent = resultado.text
-                        listItem.classList.add("dark:border-red-800","border-red-400")
+                        listItem.classList.add("dark:border-red-800", "border-red-400")
                     } else if (resultado.tipo === "resultado_final") {
                         listItem.textContent = `${resultado.equipo1} ${resultado.goles1} - ${resultado.goles2} ${resultado.equipo2}`;
                     } else if (resultado.tipo === "resultado_daniado") {
                         listItem.textContent = resultado.text
-                        listItem.classList.add("dark:border-red-800","border-red-400")
+                        listItem.classList.add("dark:border-red-800", "border-red-400")
                     } else {
 
                         listItem.textContent = "Datos no disponibles";
@@ -69,10 +69,8 @@
                 console.error("Error al cargar resultados:", error);
             }
         }
-
         // Llamar a la función para cargar los resultados al cargar la página
         window.onload = cargarResultados;
-
         function actualizarResultados() {
             // Realizar ambas solicitudes en paralelo
             Promise.all([
@@ -104,11 +102,10 @@
                 })
                 .catch((error) => console.error("Error:", error));
         }
-
-
-        // Llamar a actualizarResultados cada 30 segundos
-        setInterval(actualizarResultados, 30000);
-
+        // Llamar a actualizarResultados cada 60 segundos
+        setInterval(actualizarResultados, 60000);
+        setInterval(cargarResultados, 60000)
+        cargarResultados();
         // Llamar a actualizarResultados una vez al cargar la página
         actualizarResultados();
     </script>
